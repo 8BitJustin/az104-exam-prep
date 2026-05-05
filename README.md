@@ -57,7 +57,7 @@ The question pool grows as my studies progress. This is a living project.
 
 ## Related
 
-- [AZ-104 Lab Tracker](https://github.com/8BitJustin/az104-lab-tracker) — companion app for tracking hands-on Azure lab completion
+- [AZ-104 Lab Tracker](https://github.com/8BitJustin/az104-labs) — companion app for tracking hands-on Azure lab completion
 
 ---
 

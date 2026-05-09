@@ -53,6 +53,7 @@ export default function AZ104Exam() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [revealed, setRevealed] = useState({});
+  const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem("az104_results") || "[]"));
 
   const startExam = () => {
     setQuestions(pickQuestions());
@@ -137,6 +138,18 @@ export default function AZ104Exam() {
           <span style={{ background: "#1a2040", border: "1px solid #2a3a5a", color: "#6b7a99", fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 3, letterSpacing: 1 }}>
             v{__APP_VERSION__}
           </span>
+          <button
+            onClick={() => setPhase("history")}
+            className="nav-btn"
+            style={{
+              background: "transparent", border: "1px solid #1e2d4a",
+              color: "#6b7a99", fontSize: 11, fontWeight: 600,
+              padding: "6px 12px", borderRadius: 4, fontFamily: "inherit",
+              cursor: "pointer", letterSpacing: 0.5,
+            }}
+          >
+            📋 History
+          </button>
         </div>
         {phase === "exam" && (
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -501,6 +514,121 @@ export default function AZ104Exam() {
             >
               🔄 New Exam (Shuffle Questions)
             </button>
+          </div>
+        )}
+
+        {/* ══════════════ HISTORY SCREEN ══════════════ */}
+        {phase === "history" && (
+          <div className="fade-in">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+              <div>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: "#fff" }}>
+                  Past Results
+                </div>
+                <div style={{ color: "#6b7a99", fontSize: 12, marginTop: 4 }}>
+                  {history.length} attempt{history.length !== 1 ? "s" : ""} recorded
+                </div>
+              </div>
+              <button
+                className="nav-btn"
+                onClick={() => setPhase("start")}
+                style={{
+                  background: "transparent", border: "1px solid #1e2d4a",
+                  color: "#6b7a99", padding: "8px 16px", borderRadius: 6,
+                  fontFamily: "inherit", fontSize: 12, cursor: "pointer",
+                }}
+              >
+                ← Back
+              </button>
+            </div>
+
+            {history.length === 0 ? (
+              <div style={{
+                background: "#111827", border: "1px solid #1e2d4a",
+                borderRadius: 12, padding: 48, textAlign: "center",
+              }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>📋</div>
+                <div style={{ color: "#6b7a99", fontSize: 14 }}>No results yet — complete an exam to see your history.</div>
+              </div>
+            ) : (
+              <>
+                {/* Summary Stats */}
+                <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
+                  {[
+                    { label: "Total Attempts", value: history.length },
+                    { label: "Best Score", value: `${Math.max(...history.map(r => r.score))}%` },
+                    { label: "Average Score", value: `${Math.round(history.reduce((a, r) => a + r.score, 0) / history.length)}%` },
+                    { label: "Passing Attempts", value: history.filter(r => r.score >= 70).length },
+                  ].map((stat) => (
+                    <div key={stat.label} style={{
+                      flex: 1, minWidth: 140,
+                      background: "#111827", border: "1px solid #1e2d4a",
+                      borderRadius: 10, padding: "16px 20px", textAlign: "center",
+                    }}>
+                      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, color: "#00B4D8" }}>
+                        {stat.value}
+                      </div>
+                      <div style={{ color: "#4a5580", fontSize: 11, marginTop: 4 }}>{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Results List */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {history.map((result) => (
+                    <div key={result.id} style={{
+                      background: "#111827", border: `1px solid ${result.score >= 70 ? "#06D6A020" : "#FF6B6B20"}`,
+                      borderRadius: 10, padding: "18px 22px",
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                            <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, color: result.score >= 70 ? "#06D6A0" : result.score >= 50 ? "#FFB703" : "#FF6B6B" }}>
+                              {result.score}%
+                            </span>
+                            <span style={{
+                              background: result.score >= 70 ? "#06D6A020" : "#FF6B6B20",
+                              border: `1px solid ${result.score >= 70 ? "#06D6A040" : "#FF6B6B40"}`,
+                              color: result.score >= 70 ? "#06D6A0" : "#FF6B6B",
+                              fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 3,
+                            }}>
+                              {result.score >= 70 ? "PASS" : "FAIL"}
+                            </span>
+                          </div>
+                          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                            <span style={{ color: "#4a5580", fontSize: 11 }}>📅 {result.date}</span>
+                            <span style={{ color: "#4a5580", fontSize: 11 }}>🏷 v{result.version}</span>
+                            <span style={{ color: "#4a5580", fontSize: 11 }}>✅ {result.correct}/{result.total} correct</span>
+                            <span style={{ color: "#4a5580", fontSize: 11 }}>⚡ {result.mode === "immediate" ? "Immediate" : "End"} mode</span>
+                            <span style={{ color: "#4a5580", fontSize: 11 }}>🔢 Attempt #{result.attemptNumber}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Domain Breakdown */}
+                      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+                        {Object.entries(result.domainScores).map(([domain, data]) => {
+                          const pct = Math.round((data.correct / data.total) * 100);
+                          return (
+                            <div key={domain} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                              <span style={{ color: "#4a5580", fontSize: 11, width: 280, flexShrink: 0 }}>{domain}</span>
+                              <div style={{ flex: 1, height: 4, background: "#0a1020", borderRadius: 2 }}>
+                                <div style={{
+                                  width: `${pct}%`, height: "100%", borderRadius: 2,
+                                  background: pct >= 80 ? "#06D6A0" : pct >= 60 ? "#FFB703" : "#FF6B6B",
+                                  transition: "width 0.4s ease",
+                                }} />
+                              </div>
+                              <span style={{ color: "#6b7a99", fontSize: 11, width: 36, textAlign: "right" }}>{pct}%</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

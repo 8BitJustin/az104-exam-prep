@@ -7,6 +7,15 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [1.5.0] - 2026-05-09
+
+### Added
+- Added ability for `App.jsx` to pull from localstorage
+- Added `History` button to `App.jsx`
+- Added `History Screen` to `App.jsx` 
+
+---
+
 ## [1.4.0] - 2026-05-09
 
 ### Added

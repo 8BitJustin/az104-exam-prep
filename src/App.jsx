@@ -2,6 +2,32 @@ import { useState } from "react";
 import { questionBank } from "./questions";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
+function saveResult(questions, answers, score, mode) {
+  const domainScores = {};
+  questions.forEach((q, i) => {
+    if (!domainScores[q.domain]) {
+      domainScores[q.domain] = { correct: 0, total: 0 };
+    }
+    domainScores[q.domain].total++;
+    if (answers[i] === q.answer) domainScores[q.domain].correct++;
+  });
+
+  const existing = JSON.parse(localStorage.getItem("az104_results") || "[]");
+  const newResult = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+    version: __APP_VERSION__,
+    score,
+    correct: questions.filter((q, i) => answers[i] === q.answer).length,
+    total: questions.length,
+    mode,
+    attemptNumber: existing.length + 1,
+    domainScores,
+  };
+
+  localStorage.setItem("az104_results", JSON.stringify([newResult, ...existing]));
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -42,7 +68,10 @@ export default function AZ104Exam() {
     if (mode === "immediate") setRevealed((p) => ({ ...p, [qIdx]: true }));
   };
 
-  const finishExam = () => setPhase("results");
+  const finishExam = () => {
+    saveResult(questions, answers, score, mode);
+    setPhase("results");
+  };
   const resetExam = () => setPhase("start");
 
   const domainStats = () => {

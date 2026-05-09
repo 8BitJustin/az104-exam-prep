@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [1.3.0] - 2026-05-09
+
+### Added
+- Added Version line to each question within `questions.js`
+
+---
+
 ## [1.2.0] - 2026-05-08
 
 ### Added

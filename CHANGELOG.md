@@ -7,6 +7,17 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [1.2.0] - 2026-05-08
+
+### Added
+- Added Version bubble to header of `App.jsx`
+
+### Changed
+- Introduced __APP_VERSION__ into `vite.config.js` 
+- Updated `package.json` to 1.2.0
+
+---
+
 ## [1.1.0] - 2026-05-06
 
 ### Added

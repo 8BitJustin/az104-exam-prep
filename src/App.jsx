@@ -105,6 +105,9 @@ export default function AZ104Exam() {
           <span style={{ background: "#00B4D8", color: "#000", fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 3, letterSpacing: 1 }}>
             BETA
           </span>
+          <span style={{ background: "#1a2040", border: "1px solid #2a3a5a", color: "#6b7a99", fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 3, letterSpacing: 1 }}>
+            v{__APP_VERSION__}
+          </span>
         </div>
         {phase === "exam" && (
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>

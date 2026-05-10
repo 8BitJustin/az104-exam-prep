@@ -7,6 +7,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [1.5.1] - 2026-05-10
+
+### Added
+- Added 50 new questions to `questions.js`
+- 10 for each domain
+
+---
+
 ## [1.5.0] - 2026-05-09
 
 ### Added
